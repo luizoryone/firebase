@@ -1,0 +1,24 @@
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Arquivos de log do NPM
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Configurações locais do Firebase
+.firebase/
+firebaserc
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Pastas de build/distribuição (se você usa Vite, Webpack ou React)
+dist/
+build/
+
+node_modules/
+
