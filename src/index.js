@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, doc,updateDoc,getDoc, deleteDoc, onSnapshot, query, where, orderBy, serverTimestamp} from "firebase/firestore";
-import { getAuth,signOut, createUserWithEmailAndPassword,signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth,signOut, onAuthStateChanged, createUserWithEmailAndPassword,signInWithEmailAndPassword } from 'firebase/auth'
 
 
 
@@ -33,13 +33,8 @@ const q = query(colRef, orderBy("createdAt"))
 
 
 // --- READ (Real-time data collection) ---
-onSnapshot(
-  // colRef,
-  q,
-  (snapshot) => {
-    const books = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+const unsubCol = onSnapshot(q,  (snapshot) => {
+      const books = snapshot.docs.map(doc => ({ id: doc.id,...doc.data()
     }));
     
     console.log(books);
@@ -72,6 +67,12 @@ addBookForm.addEventListener('submit', (e) => {
       console.error("Erro ao adicionar documento: ", err.message);
     });
 });
+
+// get a single document
+const docRef = doc (db, 'books', 'K998mD7JwIjgo7mfaCSY')
+const unsubDoc = onSnapshot (docRef, (doc) => {
+console.log(doc.data(), doc.id)
+})
 
 // --- UPDATE  (Updating a document) --- \\
 const updateForm = document.querySelector('.update')
@@ -160,5 +161,21 @@ loginForm.addEventListener('submit', (e) => {
         console.error('Erro ao fazer logout:', err.message);
       });
     })
+  
+  });
 
-});
+  // subscribing to auth changes
+const unsubAuth = onAuthStateChanged (auth, (user) => {
+console.log('user status changed:', user)
+})
+// unsubscribing from changes (auth & db)
+const unsubButton = document.querySelector('.unsub')
+unsubButton.addEventListener('click', () => {
+console.log('unsubscribing')
+unsubCol()
+unsubDoc()
+unsubAuth()
+})
+
+  
+
